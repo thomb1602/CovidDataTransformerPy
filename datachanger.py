@@ -4,8 +4,8 @@ infilename = "C:\\Git\\source\\repos\\Tom\\CovidDataTransformerPy\\data\\covid_d
 outfilename = "C:\\Git\\source\\repos\\Tom\\CovidDataTransformerPy\\data\\output.csv"
 
 csvfile = pandas.read_csv(infilename, usecols=['date', 'region', 'number'])
-csvdates = csvfile.date.values  # need to only get unique
-csvregions = csvfile.region.values
+csvdates = list(dict.fromkeys(csvfile.date.values))  # use dict to get unique
+csvregions = list(dict.fromkeys(csvfile.region.values))
 
 outputrowobjects = []
 
@@ -16,3 +16,5 @@ for date in csvdates:
         regionpair = type("", (object,), {"region": region, "number": "-"})
         newrowobj.regionPairs.append(regionpair)
     outputrowobjects.append(newrowobj)
+
+# loop through csv to fill in outputrowobjects
