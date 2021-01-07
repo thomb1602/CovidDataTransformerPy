@@ -1,13 +1,23 @@
 import pandas
+import os
 
 infilename = "C:\\Git\\source\\repos\\Tom\\CovidDataTransformerPy\\data\\covid_data.csv"
 outfilename = "C:\\Git\\source\\repos\\Tom\\CovidDataTransformerPy\\data\\output.csv"
 
 fieldnames = ['date', 'region', 'number']
-
 csvfile = pandas.read_csv(infilename, usecols=fieldnames)
 csvdates = list(dict.fromkeys(csvfile.date.values))  # use dict to get unique
 csvregions = list(dict.fromkeys(csvfile.region.values))
+
+# add header row to output.csv
+if not os.path.isfile(outfilename):
+    with open(outfilename, mode='w', encoding='utf-8') as f:
+        f.write('date' + ',')
+        for region in csvregions:
+            f.write(region)
+            if not csvregions.index(region) == len(csvregions) - 1:
+                f.write(',')
+        f.write('\n')
 
 outputrowobjects = []
 
@@ -32,4 +42,12 @@ for i, inrow in csvfile.iterrows():
         if numberadded:
             break
 
-# add header row to output.csv
+# outputrowobjects to output.csv
+with open(outfilename, mode='a+', encoding='utf-8') as f:
+    for row in outputrowobjects:
+        f.write(row.date + ',')
+        for pair in row.regionPairs:
+            f.write(str(pair.number))
+            if not row.regionPairs.index(pair) == len(row.regionPairs) - 1:
+                f.write(',')
+        f.write('\n')
